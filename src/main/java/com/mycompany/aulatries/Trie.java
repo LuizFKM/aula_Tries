@@ -4,6 +4,9 @@
  */
 package com.mycompany.aulatries;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author luizfkm
@@ -51,6 +54,39 @@ public class Trie {
             atual = atual.filhos[indice];
         }
         return true; //se percorrer a apalvra toda ate a flag, ela existe.
+    }
+    
+    public List<String> autoComplete(String prefix){
+        List<String> resultados = new ArrayList<>();
+        NoTrie atual = raiz;
+        
+        //Vamos ate o no final do prefixo
+        for (int i = 0; i < prefix.length(); i++){
+            char caractere = prefix.charAt(i);
+            int indice = caractere - 'a';
+            if(atual.filhos[indice] == null){
+                return resultados;
+            }
+            atual = atual.filhos[indice];
+        }
+        
+        //Agora que estamos no final do prefixo procuramos as ramificacoes
+        
+        buscarPalavras(atual, prefix, resultados);
+        return resultados;
+    }
+
+    private void buscarPalavras(NoTrie atual, String palavra, List<String> resultados) {
+        if(atual.fimPalavra){
+            resultados.add(palavra);
+        }
+        for (int i = 0; i < 26; i++){
+            if(atual.filhos[i] != null){
+                char proximaLetra = (char)('a'+i);
+                buscarPalavras(atual.filhos[i], palavra+proximaLetra, resultados);//metodo rescursivo, chama ele mesmo ate encontrar fim da palavra
+                
+            }
+        }
     }
 
 }
